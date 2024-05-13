@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   constructor(private httpClient: HttpClient) {
   }
 
+
   private baseURL: string = 'http://localhost:8080';
 
   // Array to hold the retrieved messages from the backend
