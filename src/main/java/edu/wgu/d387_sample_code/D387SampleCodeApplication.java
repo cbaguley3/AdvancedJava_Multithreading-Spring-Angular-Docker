@@ -37,6 +37,5 @@ public class D387SampleCodeApplication {
 		englishThread.start();
 		frenchThread.start();
 
-
 	}
 }

@@ -6,8 +6,6 @@ import {catchError, map} from "rxjs/operators";
 
 
 
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,15 +13,22 @@ import {catchError, map} from "rxjs/operators";
 })
 export class AppComponent implements OnInit {
 
+
+
+  private http: any;
+
+
   constructor(private httpClient: HttpClient) {
   }
-
 
   private baseURL: string = 'http://localhost:8080';
 
   // Array to hold the retrieved messages from the backend
   public messages: string[] = [];
   private welcomeMessageUrl: string = `${this.baseURL}/welcome/messages`;
+
+  public timeZones: string[] = [];
+  private timeZonesUrl: string = `${this.baseURL}/welcome/timezones`
 
   private getUrl: string = this.baseURL + '/room/reservation/v1/';
   private postUrl: string = this.baseURL + '/room/reservation/v1';
@@ -33,6 +38,7 @@ export class AppComponent implements OnInit {
   request!: ReserveRoomRequest;
   currentCheckInVal!: string;
   currentCheckOutVal!: string;
+
 
   getWelcomeMessages(): Observable<any> {
     return this.httpClient.get(this.welcomeMessageUrl, { responseType: 'json' })
@@ -46,6 +52,20 @@ export class AppComponent implements OnInit {
           return response as string[];
         })
       );
+  }
+
+  getTimeZones(): Observable<string[]> {
+    // const url = `${this.baseURL}/welcome/timezones`;
+    return this.httpClient.get(this.timeZonesUrl, { responseType: 'json' })
+      .pipe(
+      catchError(error => {
+        console.error('Error retrieving time zones:', error);
+        return throwError(() => error);
+      }),
+      map(response => {
+        return response as string[];
+      })
+    );
   }
 
 
@@ -62,6 +82,11 @@ export class AppComponent implements OnInit {
       error: error => console.error('Error retrieving messages:', error)
     });
 
+    this.getTimeZones().subscribe({
+      next: timeZones =>
+        this.timeZones = timeZones,
+      error: error => console.error('Error retrieving time zones:', error)
+    });
 
     const roomsearchValueChanges$ = this.roomsearch.valueChanges;
 
@@ -70,6 +95,7 @@ export class AppComponent implements OnInit {
       this.currentCheckOutVal = x.checkout;
     });
   }
+
 
   onSubmit({value, valid}: { value: Roomsearch, valid: boolean }) {
     this.getAll().subscribe(
@@ -103,6 +129,7 @@ export class AppComponent implements OnInit {
   /*mapRoom(response:HttpResponse<any>): Room[]{
     return response.body;
   }*/
+
 
 
   getAll(): Observable<any> {

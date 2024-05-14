@@ -28,7 +28,13 @@
   <div class="scene" id="welcome">
     <article class="content">
 
-
+      <div id="presentation">
+        <p>Please join us for an online, live presentation, held at the Landon Hotel on June 01, 2024:
+        <ul *ngIf="timeZones.length > 0">
+          <li *ngFor="let timeZone of timeZones">{{ timeZone }}</li>
+        </ul>
+        <p *ngIf="timeZones.length === 0">*Time to be determined*</p>
+        </div>
 
       <div class="row">
         <div class=""col-12>
@@ -81,6 +87,7 @@
                 <td>
                   <strong>Room #: {{room.roomNumber}}</strong><br/>
                   <div><strong>Price: {{room.price | currency: 'USD'}}</strong></div>
+                  <div><strong>Price: {{room.price | currency: 'CAD'}}</strong></div>
                   <div><strong>Price: {{room.price | currency: 'EUR'}}</strong></div>
                 </td>
                 <td>
